@@ -61,8 +61,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   case ConnectionState.active:
                   case ConnectionState.done:
                     var data = snapshot.data?.docs;
-
-                    // print(jsonEncode(data![0].data()));
                     messagesList = data
                             ?.map((e) => MessagesModel.fromJson(e.data()))
                             .toList() ??

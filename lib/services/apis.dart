@@ -77,4 +77,15 @@ class APIs {
         .collection('chats')
         .add(messages.toJson());
   }
+
+  //Getting only last message to show in the chat tile
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessage(
+    UsersModel user,
+  ) {
+    return firestore
+        .collection("messages/${getConversationID(user.id.toString())}/chats")
+        .orderBy('timestamp', descending: true)
+        .limit(1)
+        .snapshots();
+  }
 }
