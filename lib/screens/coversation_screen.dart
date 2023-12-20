@@ -1,0 +1,136 @@
+import 'package:chat_app/main.dart';
+import 'package:flutter/material.dart';
+
+import '../models/messages_model.dart';
+
+import '../models/users_model.dart';
+import '../services/apis.dart';
+import '../widgets.dart/message_bubble.dart';
+
+class ConversationScreen extends StatefulWidget {
+  final UsersModel user;
+
+  const ConversationScreen({super.key, required this.user});
+
+  @override
+  State<ConversationScreen> createState() => _ConversationScreenState();
+}
+
+class _ConversationScreenState extends State<ConversationScreen> {
+  List<MessagesModel> messagesList = [];
+  TextEditingController messageController = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        automaticallyImplyLeading: false,
+        title: Row(
+          children: [
+            IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios,
+                size: mq.width * 0.07,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            const CircleAvatar(
+              child: Icon(Icons.person),
+            ),
+            SizedBox(
+              width: mq.width * 0.03,
+            ),
+            Text(widget.user.name.toString())
+          ],
+        ),
+        elevation: 5,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: StreamBuilder(
+              stream: APIs.getAllMessages(widget.user),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  // if the data is loading
+                  case ConnectionState.waiting:
+                  case ConnectionState.none:
+                    return const Center(child: CircularProgressIndicator());
+                  case ConnectionState.active:
+                  case ConnectionState.done:
+                    var data = snapshot.data?.docs;
+
+                    // print(jsonEncode(data![0].data()));
+                    messagesList = data
+                            ?.map((e) => MessagesModel.fromJson(e.data()))
+                            .toList() ??
+                        [];
+
+                    if (messagesList.isNotEmpty) {
+                      return ListView.builder(
+                        reverse: true, // Start from the bottom
+                        itemCount: messagesList.length,
+                        itemBuilder: (context, index) {
+                          return MessageBubble(
+                            messages: messagesList[index],
+                          );
+                        },
+                      );
+                    } else {
+                      return const Center(
+                          child: Text(
+                        "Say Hi 👋",
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.bold),
+                      ));
+                    }
+                }
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                    child: Card(
+                  child: TextField(
+                    controller: messageController,
+                    decoration: InputDecoration(
+                        hintText: "Type Something...",
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.only(left: mq.width * 0.03)),
+                  ),
+                )),
+                SizedBox(
+                  width: mq.width * 0.01,
+                ),
+                CircleAvatar(
+                  backgroundColor: Colors.blue,
+                  radius: 25,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.send,
+                      size: mq.width * 0.07,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      if (messageController.text.isNotEmpty ||
+                          messageController.text != "") {
+                        APIs.sendMessage(
+                            widget.user, messageController.text.toString());
+                        messageController.clear();
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
