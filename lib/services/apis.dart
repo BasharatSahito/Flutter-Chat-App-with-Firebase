@@ -21,6 +21,35 @@ class APIs {
     }
   }
 
+  // for adding an chat user for our conversation
+  static Future<bool> addChatUser(String email) async {
+    final data = await firestore
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+
+    print('data: ${data.docs}');
+
+    if (data.docs.isNotEmpty && data.docs.first.id != auth.currentUser!.uid) {
+      //user exists
+
+      print('user exists: ${data.docs.first.data()}');
+
+      firestore
+          .collection('users')
+          .doc(auth.currentUser!.uid)
+          .collection('my_users')
+          .doc(data.docs.first.id)
+          .set({});
+
+      return true;
+    } else {
+      //user doesn't exists
+
+      return false;
+    }
+  }
+
 //Creating a New User in the Firestore Database
   static Future<void> createNewUser() async {
     final newUser = UsersModel(
@@ -34,11 +63,25 @@ class APIs {
         .set(newUser.toJson());
   }
 
+  // for getting id's of known users from firestore database
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getMyUsersId() {
+    return firestore
+        .collection('users')
+        .doc(auth.currentUser!.uid)
+        .collection('my_users')
+        .snapshots();
+  }
+
 //Getting all users to show in chat list
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers() {
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers(
+      List<String> myUserIds) {
     return firestore
         .collection("users")
-        .where(FieldPath.documentId, isNotEqualTo: auth.currentUser!.uid)
+        .where(FieldPath.documentId,
+            whereIn: myUserIds.isEmpty
+                ? ['']
+                : myUserIds) //because empty list throws an error)
+        // .where(FieldPath.documentId, isNotEqualTo: auth.currentUser!.uid)
         .snapshots();
   }
 
@@ -51,7 +94,7 @@ class APIs {
     }
   }
 
-  //Getting all users to show in chat list
+  //Getting all Messages to show in Coversation Screen
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(
     UsersModel user,
   ) {
@@ -62,13 +105,38 @@ class APIs {
         .snapshots();
   }
 
-  //Creating Messages and Also sending message
-  static Future<void> sendMessage(UsersModel user, String msg) async {
+  // for adding an user to my user when first message is sent
+  static Future<void> sendFirstMessage(UsersModel user, String msg) async {
+    final timestamp = Timestamp.now();
+
+    // Update sender's my_users collection with the timestamp
+    await firestore
+        .collection('users')
+        .doc(auth.currentUser!.uid)
+        .collection('my_users')
+        .doc(user.id)
+        .set({'timestamp': timestamp});
+
+    // Update receiver's my_users collection with the timestamp
+    await firestore
+        .collection('users')
+        .doc(user.id)
+        .collection('my_users')
+        .doc(auth.currentUser!.uid)
+        .set({'timestamp': timestamp});
+
+    // Send the message
+    await sendMessage(user, msg, timestamp);
+  }
+
+// Creating Messages Database and also sending message
+  static Future<void> sendMessage(
+      UsersModel user, String msg, Timestamp timestamp) async {
     final messages = MessagesModel(
       msg: msg,
       sentfrom: auth.currentUser!.uid,
       sentto: user.id,
-      timestamp: Timestamp.now(),
+      timestamp: timestamp,
     );
 
     final ref = firestore.collection("messages");
@@ -76,6 +144,22 @@ class APIs {
         .doc(getConversationID(user.id.toString()))
         .collection('chats')
         .add(messages.toJson());
+
+    // Update sender's my_users collection with the timestamp
+    await firestore
+        .collection('users')
+        .doc(auth.currentUser!.uid)
+        .collection('my_users')
+        .doc(user.id)
+        .set({'timestamp': timestamp});
+
+    // Update receiver's my_users collection with the timestamp
+    await firestore
+        .collection('users')
+        .doc(user.id)
+        .collection('my_users')
+        .doc(auth.currentUser!.uid)
+        .set({'timestamp': timestamp});
   }
 
   //Getting only last message to show in the chat tile

@@ -1,4 +1,5 @@
 import 'package:chat_app/main.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../models/messages_model.dart';
@@ -117,8 +118,18 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     onPressed: () {
                       if (messageController.text.isNotEmpty ||
                           messageController.text != "") {
-                        APIs.sendMessage(
-                            widget.user, messageController.text.toString());
+                        if (messagesList.isEmpty) {
+                          //on first message (add user to my_user collection of chat user)
+                          APIs.sendFirstMessage(
+                              widget.user, messageController.text.toString());
+                        } else {
+                          //simply send message
+                          APIs.sendMessage(
+                              widget.user,
+                              messageController.text.toString(),
+                              Timestamp.now());
+                        }
+
                         messageController.clear();
                       }
                     },
