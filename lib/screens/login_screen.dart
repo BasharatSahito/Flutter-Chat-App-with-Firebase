@@ -14,6 +14,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool isAnimate = false;
+
   void _handleGoogleLoginBtn() {
     //for showing circular progress bar
     Dialogs.showProgressBar(context);
@@ -44,22 +46,35 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      setState(() {
+        isAnimate = true;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(
+      body: Stack(
+        children: [
+          AnimatedPositioned(
+            duration: const Duration(seconds: 1),
+            top: isAnimate ? mq.height * 0.1 : -mq.height * .5,
+            left: mq.width * 0.25,
+            child: Icon(
               Icons.lock,
               size: mq.width * .5,
               color: Colors.black87,
             ),
-            SizedBox(
-              height: mq.height * 0.4,
-            ),
-            ElevatedButton.icon(
+          ),
+          AnimatedPositioned(
+            duration: const Duration(seconds: 1),
+            bottom: isAnimate ? mq.height * 0.1 : -mq.height * 0.5,
+            left: mq.width * 0.1,
+            child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black87,
                     shape: RoundedRectangleBorder(
@@ -73,19 +88,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 icon: Padding(
                   padding: EdgeInsets.only(right: mq.width * 0.02),
-                  child: Icon(
-                    Icons.login,
-                    size: mq.width * 0.09,
-                    color: Colors.white,
+                  child: Image.asset(
+                    "assets/googleicon.png",
+                    height: mq.height * 0.05,
                   ),
                 ),
                 label: Text(
                   "LOGIN WITH GOOGLE",
                   style:
                       TextStyle(fontSize: mq.width * 0.05, color: Colors.white),
-                ))
-          ],
-        ),
+                )),
+          )
+        ],
       ),
     );
   }

@@ -11,28 +11,58 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
   @override
   void initState() {
     super.initState();
-    // Future.delayed(const Duration(milliseconds: 1500), () {
-    //   Navigator.pushReplacement(
-    //       context,
-    //       MaterialPageRoute(
-    //         builder: (context) => FirebaseAuth.instance.currentUser != null
-    //             ? const ChatsList()
-    //             : const LoginScreen(),
-    //       ));
-    // });
+
+    _controller = AnimationController(
+      duration: const Duration(seconds: 5),
+      vsync: this,
+    );
+
+    // Bouncing curve
+    final Animation<double> curvedAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0, 1.0, curve: Curves.easeOut),
+    ).drive(CurveTween(curve: Curves.elasticOut));
+
+    _animation = Tween<double>(begin: 0, end: 1.0).animate(curvedAnimation);
+
+    // Start the animation
+    _controller.forward();
+
+    // Commented out future logic
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FirebaseAuth.instance.currentUser != null
+                ? const ChatsList()
+                : const LoginScreen(),
+          ));
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text(
-          "SPLASH SCREEN",
-          style: TextStyle(fontSize: mq.width * .1),
+        child: ScaleTransition(
+          scale: _animation,
+          child: Image.asset(
+            "assets/logo.png",
+            height: mq.height * .2,
+          ),
         ),
       ),
     );
