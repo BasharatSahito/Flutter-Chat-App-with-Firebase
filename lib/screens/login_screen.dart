@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Auth.signInWithGoogle(context).then((user) async {
       //for hiding circular progress bar
       Navigator.pop(context);
-      print("\nUser INFO: ${user?.user}");
+      debugPrint("\nUser INFO: ${user?.user}");
       if (user?.user != null) {
         //checking if user already exists in the firestore database
         if ((await APIs.userExist())) {

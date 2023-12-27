@@ -28,12 +28,12 @@ class APIs {
         .where('email', isEqualTo: email)
         .get();
 
-    print('data: ${data.docs}');
+    debugPrint('data: ${data.docs}');
 
     if (data.docs.isNotEmpty && data.docs.first.id != auth.currentUser!.uid) {
       //user exists
 
-      print('user exists: ${data.docs.first.data()}');
+      debugPrint('user exists: ${data.docs.first.data()}');
 
       firestore
           .collection('users')

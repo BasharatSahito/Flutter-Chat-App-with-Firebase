@@ -1,4 +1,5 @@
 import 'package:chat_app/main.dart';
+import 'package:chat_app/screens/call_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -47,6 +48,18 @@ class _ConversationScreenState extends State<ConversationScreen> {
           ],
         ),
         elevation: 5,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CallPage(callID: "u1u2"),
+                  ));
+            },
+            icon: const Icon(Icons.call),
+          ),
+        ],
       ),
       body: Column(
         children: [

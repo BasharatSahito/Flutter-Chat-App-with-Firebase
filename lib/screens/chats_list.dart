@@ -18,8 +18,6 @@ class ChatsList extends StatefulWidget {
 
 class _ChatsListState extends State<ChatsList> {
   List<UsersModel> userDataList = [];
-
-  // Timestamp? timestamp;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +58,7 @@ class _ChatsListState extends State<ChatsList> {
                       ?.map((e) => e.data()["timestamp"] as Timestamp?)
                       .toList() ??
                   [];
-              print("Timestamps: $timestamps");
+              debugPrint("Timestamps: $timestamps");
               return StreamBuilder(
                 stream: APIs.getAllUsers(
                     snapshot.data?.docs.map((e) => e.id).toList() ?? []),
@@ -69,7 +67,6 @@ class _ChatsListState extends State<ChatsList> {
                     // if the data is loading
                     case ConnectionState.waiting:
                     case ConnectionState.none:
-                    // return const Center(child: CircularProgressIndicator());
                     case ConnectionState.active:
                     case ConnectionState.done:
                       var data = snapshot.data?.docs;
@@ -84,9 +81,10 @@ class _ChatsListState extends State<ChatsList> {
                             return userModel;
                           }).toList() ??
                           [];
-                      print("User Data List after assignment: $userDataList");
+                      debugPrint(
+                          "User Data List after assignment: $userDataList");
 
-                      print(
+                      debugPrint(
                           "userDataList: ${userDataList.map((user) => user.myUsers?.first.toJson()).toList()}");
 
                       userDataList.sort((a, b) {
@@ -101,9 +99,9 @@ class _ChatsListState extends State<ChatsList> {
                         return timestampB.seconds.compareTo(timestampA.seconds);
                       });
 
-                      print("After Sorting: $userDataList");
+                      debugPrint("After Sorting: $userDataList");
 
-                      print(
+                      debugPrint(
                           "After Sorting: ${userDataList.map((user) => user.myUsers?.first.timestamp).toList()}");
 
                       if (userDataList.isNotEmpty) {
