@@ -1,8 +1,10 @@
+import 'package:chat_app/main.dart';
 import 'package:chat_app/models/messages_model.dart';
 import 'package:chat_app/models/users_model.dart';
 import 'package:chat_app/screens/coversation_screen.dart';
 import 'package:chat_app/services/apis.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ChatTiles extends StatefulWidget {
   final UsersModel user;
@@ -15,6 +17,8 @@ class ChatTiles extends StatefulWidget {
 class _ChatTilesState extends State<ChatTiles> {
   List lastMessagesList = [];
   MessagesModel? message;
+  final _dateFormat = DateFormat('HH:mm'); // Customize the format as needed
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -37,15 +41,44 @@ class _ChatTilesState extends State<ChatTiles> {
             message = lastMessagesList[0];
           }
 
-          return Card(
-            elevation: 2,
-            child: ListTile(
-              leading: const CircleAvatar(
-                child: Icon(Icons.person),
+          // Format the timestamp
+          String formattedTimestamp = message != null
+              ? _dateFormat.format(message!.timestamp!.toDate())
+              : '';
+
+          return ListTile(
+            leading: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(mq.height * 0.3),
+                border: Border.all(
+                  color: Colors
+                      .black87, // You can change the color of the border here
+                  width: mq.width *
+                      0.001, // You can adjust the width of the border
+                ),
               ),
-              title: Text(widget.user.name.toString()),
-              subtitle:
-                  Text(message?.msg.toString() ?? widget.user.email.toString()),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(mq.height * 0.3),
+                child: Image.network(widget.user.photoUrl.toString()),
+              ),
+            ),
+            title: Text(
+              widget.user.name.toString(),
+              style: TextStyle(
+                fontSize: mq.width * 0.04,
+              ),
+            ),
+            subtitle: Text(
+              message?.msg.toString() ?? widget.user.email.toString(),
+              style: TextStyle(
+                fontSize: mq.width * 0.04,
+              ),
+            ),
+            trailing: Text(
+              formattedTimestamp,
+              style: TextStyle(
+                fontSize: mq.width * 0.04,
+              ),
             ),
           );
         },

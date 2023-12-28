@@ -1,13 +1,12 @@
+import 'package:chat_app/main.dart';
 import 'package:chat_app/models/my_user_model.dart';
 import 'package:chat_app/models/users_model.dart';
-import 'package:chat_app/screens/login_screen.dart';
+import 'package:chat_app/screens/user_profile.dart';
 import 'package:chat_app/services/apis.dart';
 import 'package:chat_app/widgets.dart/chat_tiles.dart';
 import 'package:chat_app/widgets.dart/dialogs.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class ChatsList extends StatefulWidget {
   const ChatsList({super.key});
@@ -27,16 +26,26 @@ class _ChatsListState extends State<ChatsList> {
         ),
         automaticallyImplyLeading: false,
         actions: [
-          ElevatedButton(
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut();
-                await GoogleSignIn().signOut().then((value) => Navigator.push(
+          Padding(
+            padding: EdgeInsets.only(right: mq.width * 0.02),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const LoginScreen(),
-                    )));
+                      builder: (context) => const UserProfile(),
+                    ));
               },
-              child: const Text("LOGOUT"))
+              child: CircleAvatar(
+                radius: mq.width * 0.05,
+                child: ClipOval(
+                  child: Image.network(
+                    APIs.auth.currentUser?.photoURL.toString() ?? "",
+                  ),
+                ),
+              ),
+            ),
+          )
         ],
       ),
       body: StreamBuilder(
@@ -58,7 +67,7 @@ class _ChatsListState extends State<ChatsList> {
                       ?.map((e) => e.data()["timestamp"] as Timestamp?)
                       .toList() ??
                   [];
-              debugPrint("Timestamps: $timestamps");
+
               return StreamBuilder(
                 stream: APIs.getAllUsers(
                     snapshot.data?.docs.map((e) => e.id).toList() ?? []),
@@ -81,11 +90,6 @@ class _ChatsListState extends State<ChatsList> {
                             return userModel;
                           }).toList() ??
                           [];
-                      debugPrint(
-                          "User Data List after assignment: $userDataList");
-
-                      debugPrint(
-                          "userDataList: ${userDataList.map((user) => user.myUsers?.first.toJson()).toList()}");
 
                       userDataList.sort((a, b) {
                         final timestampA = a.myUsers?.first.timestamp;
@@ -99,25 +103,17 @@ class _ChatsListState extends State<ChatsList> {
                         return timestampB.seconds.compareTo(timestampA.seconds);
                       });
 
-                      debugPrint("After Sorting: $userDataList");
-
-                      debugPrint(
-                          "After Sorting: ${userDataList.map((user) => user.myUsers?.first.timestamp).toList()}");
-
                       if (userDataList.isNotEmpty) {
-                        return Column(
-                          children: [
-                            Text(
-                                "Logged in as: ${APIs.auth.currentUser!.displayName}"),
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: userDataList.length,
-                                itemBuilder: (context, index) {
-                                  return ChatTiles(user: userDataList[index]);
-                                },
-                              ),
-                            ),
-                          ],
+                        return ListView.builder(
+                          itemCount: userDataList.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                ChatTiles(user: userDataList[index]),
+                                const Divider(),
+                              ],
+                            );
+                          },
                         );
                       } else {
                         return const Center(
@@ -133,6 +129,8 @@ class _ChatsListState extends State<ChatsList> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 10),
         child: FloatingActionButton(
+            backgroundColor: Colors.blueAccent,
+            foregroundColor: Colors.white,
             onPressed: () {
               _addChatUserDialog();
             },

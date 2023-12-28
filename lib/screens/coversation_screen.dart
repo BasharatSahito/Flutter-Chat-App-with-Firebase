@@ -38,11 +38,26 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 Navigator.pop(context);
               },
             ),
-            const CircleAvatar(
-              child: Icon(Icons.person),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(mq.height * 0.3),
+                border: Border.all(
+                  color: Colors
+                      .black87, // You can change the color of the border here
+                  width: mq.width *
+                      0.001, // You can adjust the width of the border
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(mq.height * 0.3),
+                child: Image.network(
+                  widget.user.photoUrl.toString(),
+                  height: mq.height * 0.05,
+                ),
+              ),
             ),
             SizedBox(
-              width: mq.width * 0.03,
+              width: mq.width * 0.02,
             ),
             Text(widget.user.name.toString())
           ],
@@ -54,7 +69,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const CallPage(callID: "u1u2"),
+                    builder: (context) => CallPage(
+                        callID: APIs.getConversationID(widget.user.id!)),
                   ));
             },
             icon: const Icon(Icons.call),

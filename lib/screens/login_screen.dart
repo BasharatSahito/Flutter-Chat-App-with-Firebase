@@ -64,11 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
             duration: const Duration(seconds: 1),
             top: isAnimate ? mq.height * 0.1 : -mq.height * .5,
             left: mq.width * 0.25,
-            child: Icon(
-              Icons.lock,
-              size: mq.width * .5,
-              color: Colors.black87,
-            ),
+            child: Icon(Icons.lock, size: mq.width * .5, color: Colors.black87),
           ),
           AnimatedPositioned(
             duration: const Duration(seconds: 1),
@@ -76,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
             left: mq.width * 0.1,
             child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black87,
+                    backgroundColor: Colors.blue.shade900,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5)),
                     fixedSize: Size(

@@ -53,9 +53,11 @@ class APIs {
 //Creating a New User in the Firestore Database
   static Future<void> createNewUser() async {
     final newUser = UsersModel(
-        id: auth.currentUser!.uid,
-        email: auth.currentUser?.email,
-        name: auth.currentUser!.displayName);
+      id: auth.currentUser!.uid,
+      email: auth.currentUser?.email,
+      name: auth.currentUser!.displayName,
+      photoUrl: auth.currentUser!.photoURL,
+    );
 
     await firestore
         .collection("users")
