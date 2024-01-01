@@ -13,17 +13,6 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-  List<Map<String, String>> userInfo = [
-    // {
-    //   "fieldName": "Profile Name",
-    //   "fieldValue": APIs.auth.currentUser?.displayName.toString()
-    // },
-    {
-      "fieldName": "Email",
-      "fieldValue": APIs.auth.currentUser?.email.toString() ?? ""
-    }
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,10 +30,8 @@ class _UserProfileState extends State<UserProfile> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(mq.height * 0.3),
                   border: Border.all(
-                    color: Colors
-                        .black87, // You can change the color of the border here
-                    width: mq.width *
-                        0.001, // You can adjust the width of the border
+                    color: Colors.black87,
+                    width: mq.width * 0.001,
                   ),
                 ),
                 child: ClipRRect(
@@ -59,23 +46,36 @@ class _UserProfileState extends State<UserProfile> {
               SizedBox(
                 height: mq.height * 0.02,
               ),
-              Text(
-                APIs.auth.currentUser?.displayName.toString() ?? "",
-                style: TextStyle(
-                    fontSize: mq.width * 0.07, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: mq.height * 0.01,
-              ),
-              Text(
-                APIs.auth.currentUser?.email.toString() ?? "",
-                style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: mq.width * 0.05,
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: mq.height * 0.3,
+              StreamBuilder(
+                stream: APIs.getSelfInfo(),
+                builder: (context, snapshot) {
+                  var data = snapshot.data?.data();
+                  String name = data?["name"] ?? "Default Name";
+                  String email = data?["email"] ?? "Default Email";
+                  return Column(
+                    children: [
+                      Text(
+                        name,
+                        style: TextStyle(
+                            fontSize: mq.width * 0.07,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: mq.height * 0.01,
+                      ),
+                      Text(
+                        email,
+                        style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: mq.width * 0.05,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: mq.height * 0.3,
+                      ),
+                    ],
+                  );
+                },
               ),
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -101,42 +101,6 @@ class _UserProfileState extends State<UserProfile> {
                     style: TextStyle(
                         fontSize: mq.width * 0.05, color: Colors.white),
                   )),
-              // Expanded(
-              //   child: Padding(
-              //       padding: EdgeInsets.symmetric(
-              //         vertical: mq.height * 0.05,
-              //         horizontal: mq.width * 0.07,
-              //       ),
-              //       child: ListView.builder(
-              //         itemCount: userInfo.length,
-              //         itemBuilder: (context, index) {
-              //           return Row(
-              //             children: [
-              //               Expanded(
-              //                 flex:
-              //                     2, // This will take up 2 parts of the available space
-              //                 child: Text(
-              //                   userInfo[index]['fieldName'].toString(),
-              //                   style: TextStyle(
-              //                       fontSize: mq.width * 0.04,
-              //                       fontWeight: FontWeight.bold),
-              //                 ),
-              //               ),
-              //               Expanded(
-              //                 flex:
-              //                     3, // This will take up 3 parts of the available space
-              //                 child: Text(
-              //                   userInfo[index]["fieldValue"].toString(),
-              //                   style: TextStyle(
-              //                       fontSize: mq.width * 0.04,
-              //                       fontWeight: FontWeight.bold),
-              //                 ),
-              //               )
-              //             ],
-              //           );
-              //         },
-              //       )),
-              // )
             ],
           ),
         ),

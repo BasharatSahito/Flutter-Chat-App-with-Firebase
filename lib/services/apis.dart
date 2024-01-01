@@ -87,6 +87,18 @@ class APIs {
         .snapshots();
   }
 
+//Getting Self Info From Firestore Database
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> getSelfInfo() {
+    if (auth.currentUser?.uid != null) {
+      return firestore
+          .collection("users")
+          .doc(auth.currentUser!.uid)
+          .snapshots();
+    } else {
+      throw Exception('User is not authenticated or UID is null.');
+    }
+  }
+
 //useful for getting conversation id
   static String getConversationID(String recieverId) {
     if (auth.currentUser!.uid.hashCode <= recieverId.hashCode) {

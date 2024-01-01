@@ -52,17 +52,14 @@ class _ChatsListState extends State<ChatsList> {
         stream: APIs.getMyUsersId(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
-            //if data is loading
             case ConnectionState.waiting:
             case ConnectionState.none:
               return const Center(child: CircularProgressIndicator());
 
-            //if some or all data is loaded then show it
             case ConnectionState.active:
             case ConnectionState.done:
               var data = snapshot.data?.docs;
 
-              // Convert the timestamp data to a list
               List<Timestamp?> timestamps = data
                       ?.map((e) => e.data()["timestamp"] as Timestamp?)
                       .toList() ??
