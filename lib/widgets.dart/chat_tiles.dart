@@ -47,6 +47,9 @@ class _ChatTilesState extends State<ChatTiles> {
               : '';
 
           return ListTile(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(08)),
+            tileColor: Colors.white,
             leading: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(mq.height * 0.3),
@@ -59,7 +62,18 @@ class _ChatTilesState extends State<ChatTiles> {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(mq.height * 0.3),
-                child: Image.network(widget.user.photoUrl.toString()),
+                child: widget.user.photoUrl != null
+                    ? Image.network(
+                        widget.user.photoUrl!,
+                        height: mq.height * 0.05,
+                        errorBuilder: (context, error, stackTrace) {
+                          // If there's an error loading the image, show the default icon
+                          return Icon(Icons.person,
+                              color: Colors.grey, size: mq.height * 0.05);
+                        },
+                      )
+                    : Icon(Icons.account_circle,
+                        size: mq.height * 0.05), // Default user icon
               ),
             ),
             title: Text(

@@ -79,7 +79,7 @@ class _UserProfileState extends State<UserProfile> {
               ),
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
+                      backgroundColor: Colors.deepPurple,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5)),
                       fixedSize: Size(

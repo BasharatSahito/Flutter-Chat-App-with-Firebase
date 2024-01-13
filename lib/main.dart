@@ -8,6 +8,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(const MyApp());
 }
 
@@ -22,12 +23,13 @@ class MyApp extends StatelessWidget {
     mq = MediaQuery.sizeOf(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Chat App',
       theme: ThemeData(
+        iconTheme: const IconThemeData(color: Colors.deepPurple),
         appBarTheme: const AppBarTheme(
           foregroundColor: Colors.white,
           centerTitle: true,
-          color: Colors.blue,
+          color: Colors.deepPurple,
         ),
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,

@@ -2,9 +2,7 @@ import 'package:chat_app/main.dart';
 import 'package:chat_app/screens/call_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import '../models/messages_model.dart';
-
 import '../models/users_model.dart';
 import '../services/apis.dart';
 import '../widgets.dart/message_bubble.dart';
@@ -50,10 +48,18 @@ class _ConversationScreenState extends State<ConversationScreen> {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(mq.height * 0.3),
-                child: Image.network(
-                  widget.user.photoUrl.toString(),
-                  height: mq.height * 0.05,
-                ),
+                child: widget.user.photoUrl != null
+                    ? Image.network(
+                        widget.user.photoUrl!,
+                        height: mq.height * 0.05,
+                        errorBuilder: (context, error, stackTrace) {
+                          // If there's an error loading the image, show the default icon
+                          return Icon(Icons.person,
+                              color: Colors.white, size: mq.height * 0.05);
+                        },
+                      )
+                    : Icon(Icons.account_circle,
+                        size: mq.height * 0.05), // Default user icon
               ),
             ),
             SizedBox(
@@ -136,7 +142,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   width: mq.width * 0.01,
                 ),
                 CircleAvatar(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Colors.deepPurple,
                   radius: 25,
                   child: IconButton(
                     icon: Icon(

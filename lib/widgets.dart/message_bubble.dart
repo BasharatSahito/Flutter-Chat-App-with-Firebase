@@ -29,7 +29,7 @@ class _MessageBubbleState extends State<MessageBubble> {
           Flexible(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.green,
+                color: Colors.deepPurple,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(mq.width * 0.03),
                   topRight: Radius.circular(mq.width * 0.03),
