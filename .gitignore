@@ -45,3 +45,4 @@ app.*.map.json
 
 # Ignore Google service info plist file to prevent exposure of sensitive information
 **/ios/Runner/GoogleService-Info.plist
+/lib
