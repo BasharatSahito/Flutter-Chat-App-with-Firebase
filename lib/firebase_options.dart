@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -48,23 +49,32 @@ class DefaultFirebaseOptions {
         );
     }
   }
+  // Retrieve Firebase configuration details from environment variables
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDh6v9dqZ12MRjkpHS6ZmWZDuaWWrqWWMQ',
-    appId: '1:5027387074:android:9024e4c5d1ee1980a78d5b',
+  static final androidApiKey = dotenv.env['FIREBASE_ANDROID_API_KEY'] ?? '';
+  static final androidAppId = dotenv.env['FIREBASE_ANDROID_APP_ID'] ?? '';
+
+  static FirebaseOptions android = FirebaseOptions(
+    apiKey: androidApiKey,
+    appId: androidAppId,
     messagingSenderId: '5027387074',
     projectId: 'chat-app-d2aff',
     storageBucket: 'chat-app-d2aff.appspot.com',
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCfJUoM1JVKX22faSu3C2I3CneH2iqiSK4',
-    appId: '1:5027387074:ios:382f9a8ebe8a37e2a78d5b',
+  static final iosApiKey = dotenv.env['FIREBASE_IOS_API_KEY'] ?? '';
+  static final iosAppId = dotenv.env['FIREBASE_IOS_APP_ID'] ?? '';
+
+  static FirebaseOptions ios = FirebaseOptions(
+    apiKey: iosApiKey,
+    appId: iosAppId,
     messagingSenderId: '5027387074',
     projectId: 'chat-app-d2aff',
     storageBucket: 'chat-app-d2aff.appspot.com',
-    androidClientId: '5027387074-204474lll3qeda6o0etmmg885lrcl4ur.apps.googleusercontent.com',
-    iosClientId: '5027387074-ohm064j2s596jfenpn92eqdpb92tf12v.apps.googleusercontent.com',
+    androidClientId:
+        '5027387074-204474lll3qeda6o0etmmg885lrcl4ur.apps.googleusercontent.com',
+    iosClientId:
+        '5027387074-ohm064j2s596jfenpn92eqdpb92tf12v.apps.googleusercontent.com',
     iosBundleId: 'com.example.chatApp',
   );
 }
