@@ -28,20 +28,20 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  cloud_firestore: ^4.13.6
+  cloud_firestore: ^5.4.2
   cupertino_icons: ^1.0.2
-  firebase_auth: ^4.15.3
-  firebase_core: ^2.24.2
+  firebase_auth: ^5.3.0
+  firebase_core: ^3.5.0
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.1.0
   google_sign_in: ^6.2.1
   intl: ^0.19.0
   liquid_pull_to_refresh: ^3.0.1
-  zego_uikit_prebuilt_call: ^3.18.4
+  zego_uikit_prebuilt_call: ^4.15.12
 
 dev_dependencies:
-  flutter_lints: ^2.0.0
+  flutter_lints: ^4.0.0
   flutter_test:
     sdk: flutter
 
